@@ -1,8 +1,6 @@
 # Javasip
-Oscar Duarte
-Test Name
+Oscar Duartecd
 Ryan Brown
 Thomas Biaglow
 Maybelene
-Test Name 2
 Rambo
