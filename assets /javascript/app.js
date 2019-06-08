@@ -1,7 +1,11 @@
 $(document).ready(function() {
     $("#beer_search").click(function(){
         $.ajax({ 
+<<<<<<< HEAD
             url: 'https://api.catalog.beer/beer',
+=======
+            url: 'https://api.catalog.beer/beer?count=5',
+>>>>>>> a2f7c38e4e8d223b9399369a19946654022c4444
             headers: {
                 // Convert key to Base64
                 'Authorization': 'Basic ' + btoa('b9c7b5ed-85bf-1671-c158-c3a503963a90:\'\''),
