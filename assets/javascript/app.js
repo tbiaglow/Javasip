@@ -34,7 +34,7 @@ $(document).ready(function() {
                     },
                     method: 'GET'
                 }).then(function(response) {
-                    console.log(response.data.length)
+                    console.log(response.data)
                     for (i = 0; i < response.data.length; i++) {
                         var div = $('<div>').attr('data-name',response.data[i].name)
                         
@@ -45,5 +45,15 @@ $(document).ready(function() {
             });
             
         });
+    })
+    $("#show-filter").on('click', function(){
+        // console.log($('#filter').css('display'));
+        if ($('#filter').css('display') === 'none'){
+            $('#filter').css('display','block')
+            $('#show-filter').html('hide filter')
+        } else {
+            $('#filter').css('display','none')
+            $('#show-filter').html('show filter')
+        }
     })
 });

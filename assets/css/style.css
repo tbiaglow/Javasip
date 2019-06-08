@@ -1,0 +1,16 @@
+body{
+    background: #f1f1f1;
+}
+.jumbotron{
+    background: transparent;
+
+}
+#display, #content{
+    overflow: auto;
+}
+#filter{
+    display: none;
+    border:1px dotted #ccc;
+    padding:5px;
+    margin: 0px 3px;
+}
