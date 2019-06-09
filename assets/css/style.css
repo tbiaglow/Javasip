@@ -1,16 +1,25 @@
-body{
+body {
     background: #f1f1f1;
 }
-.jumbotron{
-    background: transparent;
 
+.jumbotron {
+    background: transparent;
 }
-#display, #content{
+
+#display, #content {
     overflow: auto;
 }
-#filter{
+
+#filter {
+    border-left:1px dotted #ccc;
+    border-right:1px dotted #ccc;
+    border-bottom:1px dotted #ccc;
     display: none;
-    border:1px dotted #ccc;
-    padding:5px;
+    padding: 5px;
     margin: 0px 3px;
+}
+
+#filter-select {
+
+    margin: 0 3px;
 }
