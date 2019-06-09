@@ -14,12 +14,26 @@ body {
     border-left:1px dotted #ccc;
     border-right:1px dotted #ccc;
     border-bottom:1px dotted #ccc;
-    display: none;
+    display: block;
     padding: 5px;
     margin: 0px 3px;
 }
 
 #filter-select {
-
     margin: 0 3px;
+}
+
+.filter-option { 
+    border-bottom: 1px dotted #ccc;
+    margin: 0 0 20px 0;
+    overflow: auto;
+    padding: 20px 0;
+}
+
+.b {
+    padding: 10px 0;
+}
+
+.b:nth-child(even) {
+    background: #f7f7f7
 }
