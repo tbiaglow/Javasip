@@ -45,6 +45,7 @@ $(document).ready(function() {
             },
             method: 'GET'
         }).then(function(response) {
+            beer = [];
             for (var i = 0; i < response.data.length; i++) {
                 // Create an array that includes the beer id and style
                 // Beer id to be used in next call to api
