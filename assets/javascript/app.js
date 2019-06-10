@@ -1,8 +1,9 @@
 $(document).ready(function() {
-    var beerStyle = [];
+    var beer = [];
     var location;
     var radius = 10;
     var mapZoom = 10;
+    var styleFilter = [];
 
     //TO DO: SET MAP TO USER'S COORDINATES ON PAGE LOAD 
     var lat = 40.7128;
@@ -33,7 +34,7 @@ $(document).ready(function() {
     // Store the id so we can pull additional information from beer object.
     $(document).on('click','.b', function(){ 
         $('#display').html('')
-        console.log($(this).attr('data-id'))
+
         var brewerUrl = $(this).attr('data-id')
         $.ajax({
             url: 'https://cors-anywhere.herokuapp.com/https://api.catalog.beer/brewer/' + brewerUrl + '/beer', 
@@ -47,14 +48,21 @@ $(document).ready(function() {
             for (var i = 0; i < response.data.length; i++) {
                 // Create an array that includes the beer id and style
                 // Beer id to be used in next call to api
-                beerStyle.push({'beerID':response.data[i].id,'beerStyle':response.data[i].style})
+                beer.push({'beerID':response.data[i].id,'beerStyle':response.data[i].style})
+
+                if (styleFilter.indexOf(response.data[i].style) === -1) { 
+                    styleFilter.push(response.data[i].style)
+                }
             };
             
+            $('#display').append('<div class="row"><div id="styles"><h2>Styles</h2></div></div>')
             $('#display').append('<div class="row" style="padding-left:10px;"><div class="col-8"><h2>Beers</h2></div><div class="col-4">Social</div></div>')
+            $('#styles').css('display','block')
+
             // Call Beer
-            for (var i = 0; i < beerStyle.length; i++) {
+            for (var b = 0; b < beer.length; b++) {
                 $.ajax({
-                    url: 'https://cors-anywhere.herokuapp.com/https://api.catalog.beer/beer/' + beerStyle[i].beerID, 
+                    url: 'https://cors-anywhere.herokuapp.com/https://api.catalog.beer/beer/' + beer[b].beerID, 
                     headers: {
                         // Convert key to Base64
                         'Authorization': 'Basic ' + btoa('b9c7b5ed-85bf-1671-c158-c3a503963a90:\'\''),
@@ -62,26 +70,31 @@ $(document).ready(function() {
                     },
                     method: 'GET'
                 }).then(function(response){
-                    // TO DO: SETUP FILTER OPTIONS
-                    // NOTE: PRINTING TO PAGE FROM API CALL IS SLOW
-                    if (response.style !== '') {
-                        var div = $('<div>').attr('data-id',response.id).addClass('beer')
-                        var row = $('<div>').attr('id','beer-row').addClass('row')
-                        var left = $('<div>').attr('id','beer-left').addClass('col-8')
-                        var right = $('<div>').attr('id','beer-right').addClass('col-4')
-                        // Print beer name + style to page
-                        div.html('Name: ' + response.name + "<br>" + 'Style: ' + response.style + "<br>" + 'ABV: ' + response.abv + "%<br>" + 'IBU: ' + response.ibu)
-                        $('#display').append(row)
-                        $('#beer-row').append(left)
-                        $('#beer-row').append(right)
-                        $('#beer-left').append(div) 
-                    };             
+                    var div = $('<div>').attr('data-id',response.id).addClass('beer')
+                    var row = $('<div>').attr('id','beer-row').addClass('row')
+                    var left = $('<div>').attr('id','beer-left').addClass('col-8')
+                    var right = $('<div>').attr('id','beer-right').addClass('col-4')
+                    // Print beer name + style to page
+                    div.html('Name: ' + response.name + "<br>" + 'Style: ' + response.style + "<br>" + 'ABV: ' + response.abv + "%<br>" + 'IBU: ' + response.ibu)
+                    $('#display').append(row)
+                    $('#beer-row').append(left)
+                    $('#beer-row').append(right)
+                    $('#beer-left').append(div)
                 });
             };
+            beerStyles()
         });
     });    
 
+    function beerStyles(){
+        styleFilter.forEach(function(style) {
+            $('#styles').append('<button class="btn-primary filter-button">' + style + '</button> ')
+
+        });
+    }
+
     // To be run on page load and whenever someone changes the search radius
+    // Load nearby breweries and map them
     function localBrews() {
         $('#display').html('')
         $('#display').append('<h2>Nearby Breweries</h2>') 
@@ -103,7 +116,7 @@ $(document).ready(function() {
                 var address = $('<div>').addClass('brewer-address')
                 div.html(response.data[i].brewer.name)
                 address.html('<div class="row"><div class="col">' + response.data[i].location.address.address2 + '<br>' + response.data[i].location.address.city + ', ' + response.data[i].location.address.state_short + ' ' + response.data[i].location.address.zip5 + '</div></div>')
-                // div.html(
+                
                 $('#display').append(div) 
                 $('#display').append(address) 
             }
