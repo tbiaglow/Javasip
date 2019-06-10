@@ -1,16 +1,68 @@
-body{
+body {
     background: #f1f1f1;
 }
-.jumbotron{
-    background: transparent;
 
+.jumbotron {
+    background: transparent;
 }
-#display, #content{
+
+#display, #content {
     overflow: auto;
 }
-#filter{
-    display: none;
-    border:1px dotted #ccc;
-    padding:5px;
+
+#filter {
+    border-left: 1px dotted #ccc;
+    border-right: 1px dotted #ccc;
+    border-bottom: 1px dotted #ccc;
+    display: block;
+    padding: 5px;
     margin: 0px 3px;
+}
+
+#filter-select {
+    margin: 0 3px;
+}
+
+.filter-option { 
+    border-bottom: 1px dotted #ccc;
+    margin: 0 0 20px 0;
+    overflow: auto;
+    padding: 20px 0;
+}
+
+.filter-button {
+    margin: 0 0 10px 0
+}
+
+.b {
+    padding: 10px 0 10px 10px;
+}
+
+.b:nth-child(even) {
+    background: #f7f7f7
+}
+
+.brewer-address {
+    border-bottom: 1px solid #f1f1f1;
+    color: #696969;
+    font-size: 12pt;
+    padding: 10px;
+}
+
+.beer { 
+    padding: 10px 0 10px 10px
+}
+
+.beer:nth-child(even) {
+    background: #f7f7f7;
+}
+
+#styles {
+    display: none;
+    overflow: auto;
+    padding:0 20px 40px 20px;
+}
+
+#styles > h2 {
+    padding-bottom: 10px;
 }
