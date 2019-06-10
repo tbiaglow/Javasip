@@ -165,3 +165,23 @@ $(document).ready(function() {
         };
     });
 });
+
+function ipLookUp () {
+    $.ajax('http://ip-api.com/json')
+    .then(
+        function success(response) {
+            console.log('User\'s Location Data is ', response);
+            console.log('User\'s Country', response.country);
+            lat = response.lat;
+            long = response.lon;
+            console.log(lat);
+            console.log(long)
+        },
+  
+        function fail(data, status) {
+            console.log('Request failed.  Returned status of',
+                        status);
+        }
+    );
+  }
+  ipLookUp()
