@@ -25,10 +25,8 @@ $(document).ready(function() {
             } else { 
                 mapZoom = 6
             }
-
             localBrews()
         }
-
     });
 
     // On click grab the beer ids associated with brewer
@@ -52,6 +50,7 @@ $(document).ready(function() {
                 beerStyle.push({'beerID':response.data[i].id,'beerStyle':response.data[i].style})
             };
             
+            $('#display').append('<div class="row" style="padding-left:10px;"><div class="col-8"><h2>Beers</h2></div><div class="col-4">Social</div></div>')
             // Call Beer
             for (var i = 0; i < beerStyle.length; i++) {
                 $.ajax({
@@ -66,10 +65,16 @@ $(document).ready(function() {
                     // TO DO: SETUP FILTER OPTIONS
                     // NOTE: PRINTING TO PAGE FROM API CALL IS SLOW
                     if (response.style !== '') {
-                        var div = $('<div>').attr('data-id',response.id)
+                        var div = $('<div>').attr('data-id',response.id).addClass('beer')
+                        var row = $('<div>').attr('id','beer-row').addClass('row')
+                        var left = $('<div>').attr('id','beer-left').addClass('col-8')
+                        var right = $('<div>').attr('id','beer-right').addClass('col-4')
                         // Print beer name + style to page
-                        div.html('Name: ' + response.name + "<br>" + 'Style: ' + response.style + "<br>" + 'ABV: ' + response.abv + "%<br>" + 'IBU: ' + response.ibu + '<br><br>')
-                        $('#display').append(div) 
+                        div.html('Name: ' + response.name + "<br>" + 'Style: ' + response.style + "<br>" + 'ABV: ' + response.abv + "%<br>" + 'IBU: ' + response.ibu)
+                        $('#display').append(row)
+                        $('#beer-row').append(left)
+                        $('#beer-row').append(right)
+                        $('#beer-left').append(div) 
                     };             
                 });
             };
@@ -91,15 +96,16 @@ $(document).ready(function() {
             },
             method: 'GET'
         }).then(function(response) {
-            console.log(response)
-
             location = [];
             for (var i = 0; i < response.data.length; i++) { 
                 location.push({'id':response.data[i].brewer.id,'brewer':response.data[i].brewer.name,'latitude':response.data[i].location.latitude,'longitude':response.data[i].location.longitude})
                 var div = $('<div>').attr('data-id',response.data[i].brewer.id).addClass('b')
+                var address = $('<div>').addClass('brewer-address')
                 div.html(response.data[i].brewer.name)
+                address.html('<div class="row"><div class="col">' + response.data[i].location.address.address2 + '<br>' + response.data[i].location.address.city + ', ' + response.data[i].location.address.state_short + ' ' + response.data[i].location.address.zip5 + '</div></div>')
                 // div.html(
                 $('#display').append(div) 
+                $('#display').append(address) 
             }
             
             // Include Mapbox
@@ -119,7 +125,7 @@ $(document).ready(function() {
                     center: feature.center,
                     zoom: mapZoom
                 });
-                    //map.scrollZoom.disable();
+                    // map.scrollZoom.disable();
                     // Grab location of nearby breweries and add marker
                     // Based on longitude and latitude
                     for (var i = 0; i < location.length; i++) {

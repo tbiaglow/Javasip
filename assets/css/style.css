@@ -11,9 +11,9 @@ body {
 }
 
 #filter {
-    border-left:1px dotted #ccc;
-    border-right:1px dotted #ccc;
-    border-bottom:1px dotted #ccc;
+    border-left: 1px dotted #ccc;
+    border-right: 1px dotted #ccc;
+    border-bottom: 1px dotted #ccc;
     display: block;
     padding: 5px;
     margin: 0px 3px;
@@ -31,9 +31,24 @@ body {
 }
 
 .b {
-    padding: 10px 0;
+    padding: 10px 0 10px 10px;
 }
 
 .b:nth-child(even) {
     background: #f7f7f7
+}
+
+.brewer-address {
+    border-bottom: 1px solid #f1f1f1;
+    color: #696969;
+    font-size: 12pt;
+    padding: 10px;
+}
+
+.beer { 
+    padding: 10px 0 10px 10px
+}
+
+.beer:nth-child(even) {
+    background: #f7f7f7;
 }
