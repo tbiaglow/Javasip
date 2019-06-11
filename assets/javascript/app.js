@@ -9,21 +9,29 @@ $(document).ready(function() {
     var lat;
     var long;
 
-    //Function that grabs latitude and longitude of use from ip address
+    // Function that grabs latitude and longitude of user from ip address
     function ipLookUp () {
-        $.ajax('https://ip-api.com/json')
-        .then(
-            function success(response) {
-                lat = response.lat;
-                long = response.lon;
-                localBrews()
-            },
-            //Give coordinates for NYC if fail to get user's location
-            function fail(data, status) {
-                lat = 40.8
-                long = -74
-            }
-        );
+        var options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        };
+          
+        function success(pos) {
+            var crd = pos.coords;
+            lat = pos.coords.latitude;
+            long = pos.coords. longitude;
+            localBrews()
+        }
+        
+        //On error, set coordinates to New York
+        function error(err) {
+            lat = 40.8;
+            long = -74;
+            localBrews()
+        }
+          
+        navigator.geolocation.getCurrentPosition(success, error, options);
     };
     ipLookUp()
 
