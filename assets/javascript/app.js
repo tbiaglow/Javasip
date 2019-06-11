@@ -1,13 +1,12 @@
 $(document).ready(function() {
     var beer = [];
     var location;
-    var radius = 10;
+    var distance = 10; // nearby brewery distance
     var mapZoom = 10;
     var styleFilter = [];
-
-    //TO DO: SET MAP TO USER'S COORDINATES ON PAGE LOAD 
     var lat;
     var long;
+    var brewer;
 
     // Function that grabs latitude and longitude of user from ip address
     function ipLookUp () {
@@ -16,15 +15,15 @@ $(document).ready(function() {
             timeout: 5000,
             maximumAge: 0
         };
-          
+        
+        // If geolocation is accepted set map + nearby brewery search to the user's location
         function success(pos) {
-            var crd = pos.coords;
             lat = pos.coords.latitude;
             long = pos.coords. longitude;
             localBrews()
         }
         
-        //On error, set coordinates to New York
+        // On error, set coordinates to New York
         function error(err) {
             lat = 40.8;
             long = -74;
@@ -35,13 +34,13 @@ $(document).ready(function() {
     };
     ipLookUp()
 
-    // Map adj based on filter
+    // Map zoom adj based on filter
+    // Default zoom on load = 10
     $("#beer_search").click(function(){
-        
-        // If the user changes the search radius in the filter send new list of breweries available
-        if ($('#radius').val() !== null) {
-            radius = $('#radius').val()
-            var v = $('#radius').val()
+        // If the user changes the search distance print new list of breweries nearby
+        if ($('#distance').val() !== null) {
+            distance = $('#distance').val()
+            var v = $('#distance').val()
 
             if (v === '5' || v === '10') { 
                 mapZoom = 10
@@ -59,6 +58,7 @@ $(document).ready(function() {
     // On click grab the beer ids associated with brewer
     // Store the id so we can pull additional information from beer object.
     $(document).on('click','.b', function(){ 
+        brewer = $(this).text()
         $('#display').html('')
 
         var brewerUrl = $(this).attr('data-id')
@@ -82,9 +82,7 @@ $(document).ready(function() {
                 }
             };
             
-            $('#display').append('<div class="row"><div id="styles"><h2>Styles</h2></div></div>')
-            $('#display').append('<div class="row" style="padding-left:10px;"><div class="col-8"><h2>Beers</h2></div><div class="col-4">Social</div></div>')
-            $('#styles').css('display','block')
+
 
             // Call Beer
             for (var b = 0; b < beer.length; b++) {
@@ -97,7 +95,7 @@ $(document).ready(function() {
                     },
                     method: 'GET'
                 }).then(function(response){
-                    var div = $('<div>').attr('data-id',response.id).addClass('beer')
+                    var div = $('<div>').attr({'data-id':response.id,'data-style':response.style}).addClass('beer')
                     var row = $('<div>').attr('id','beer-row').addClass('row')
                     var left = $('<div>').attr('id','beer-left').addClass('col-8')
                     var right = $('<div>').attr('id','beer-right').addClass('col-4')
@@ -109,17 +107,47 @@ $(document).ready(function() {
                     $('#beer-left').append(div)
                 });
             };
+            $('#display').append('<div class="row bg-warning" style="padding-left: 20px"><h1>' + brewer + '</h1></div><hr>')
+            $('#display').append('<div class="row"><div id="styles"><h2>Styles</h2></div></div>')
+            $('#display').append('<div class="row" style="padding-left: 10px;"><div class="col-8"><h2>Beers (' + beer.length + ')</h2></div><div class="col-4">Social</div></div>')
+            $('#styles').css('display','block')
             beerStyles()
         });
     });    
 
+    // Build beer style filter
     function beerStyles(){
         styleFilter.forEach(function(style) {
-            $('#styles').append('<button class="btn-primary filter-button">' + style + '</button> ')
-
+            $('#styles').append('<button class="btn-primary filter-button btn-on">' + style + '</button> ')
         });
     }
 
+    // Filter beers on button click
+    $(document).on('click', '.filter-button', function(){
+        if ($(this).hasClass('btn-on')) { 
+            // Add clear filter button
+            $('#styles').append('<button class="btn-dark clear-filter">Clear Filter</button>')
+            // Turn all buttons light grey
+            // Grey implies that these options can no longer be selected
+            $('.btn-on').removeClass('btn-on btn-primary').addClass('btn-light btn-off')
+            // Clicked button remains blue
+            $(this).removeClass('btn-light').addClass('btn-primary btn-clicked')
+            
+            // Hide beers that have a style mismatch with the selection
+            $('.beer[data-style!="' + $(this).text() + '"]').css({'display':'none','background':''})
+        } 
+    })
+    
+    // Clear beers filter
+    $(document).on('click', '.clear-filter', function(){
+        // Show beers again
+        $('.beer[data-style]').css('display','block')
+        // Remove the clear filter button so beers can be filtered again
+        $('.clear-filter').remove()
+        // Make buttons blue again
+        $('.filter-button').removeClass('btn-off btn-light').addClass('btn-primary btn-on')
+    })
+    
     // To be run on page load and whenever someone changes the search radius
     // Load nearby breweries and map them
     function localBrews() {
@@ -128,7 +156,7 @@ $(document).ready(function() {
 
         // Map 
         $.ajax({
-            url: 'https://cors-anywhere.herokuapp.com/https://api.catalog.beer/location/nearby?latitude=' + lat + '&longitude=' + long + '&search_radius=' + radius, 
+            url: 'https://cors-anywhere.herokuapp.com/https://api.catalog.beer/location/nearby?latitude=' + lat + '&longitude=' + long + '&search_radius=' + distance, 
             headers: {
                 // Convert key to Base64
                 'Authorization': 'Basic ' + btoa('b9c7b5ed-85bf-1671-c158-c3a503963a90:\'\''),
@@ -152,19 +180,18 @@ $(document).ready(function() {
             mapboxgl.accessToken = 'pk.eyJ1IjoicnlhbmNicm93biIsImEiOiJjandvZTJ2eGcwZGw3NGFueWVpdGZoeXMyIn0.bY5FsEL2jeX1XzOIAPT8NQ';
             var map = new mapboxgl.Map({
             container: 'map', // container id
-            style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
-            center: [long, lat], // starting position [long, lat]
-            zoom: mapZoom// starting zoom
+            style: 'mapbox://styles/mapbox/streets-v11', 
+            center: [long, lat], 
+            zoom: mapZoom 
             
         });
-        for (var i = 0; i < location.length; i++) {
-            new mapboxgl.Marker()
-            .setLngLat([location[i].longitude, location[i].latitude])
-            .addTo(map);
-        };
+            for (var i = 0; i < location.length; i++) {
+                new mapboxgl.Marker()
+                .setLngLat([location[i].longitude, location[i].latitude])
+                .addTo(map);
+            };
         }); 
     }
-
 
     // Create filter box that hides/reveals options on click
     $("#show-filter").on('click', function(){
@@ -178,5 +205,3 @@ $(document).ready(function() {
         };
     });
 });
-
-
