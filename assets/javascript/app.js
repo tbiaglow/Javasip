@@ -6,8 +6,26 @@ $(document).ready(function() {
     var styleFilter = [];
 
     //TO DO: SET MAP TO USER'S COORDINATES ON PAGE LOAD 
-    var lat = 40.7128;
-    var long = -74.0060;
+    var lat;
+    var long;
+
+    //Function that grabs latitude and longitude of use from ip address
+    function ipLookUp () {
+        $.ajax('http://ip-api.com/json')
+        .then(
+            function success(response) {
+                lat = response.lat;
+                long = response.lon;
+                localBrews()
+            },
+            //Give coordinates for NYC if fail to get user's location
+            function fail(data, status) {
+                lat = 40.8
+                long = -74
+            }
+        );
+    };
+    ipLookUp()
 
     // Map adj based on filter
     $("#beer_search").click(function(){
@@ -124,34 +142,21 @@ $(document).ready(function() {
             
             // Include Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicnlhbmNicm93biIsImEiOiJjandvZTJ2eGcwZGw3NGFueWVpdGZoeXMyIn0.bY5FsEL2jeX1XzOIAPT8NQ';
-            var mapboxClient = mapboxSdk({ accessToken: mapboxgl.accessToken });
-            mapboxClient.geocoding.forwardGeocode({
-                query: 'New York',
-                autocomplete: false,
-                limit: 1
-            }).send().then(function (response) {
-                if (response && response.body && response.body.features && response.body.features.length) {
-                    var feature = response.body.features[0];
-                    var map = new mapboxgl.Map({
-                    container: 'map',
-                    // style: 'mapbox://styles/mapbox/light-v9'
-                    style: 'mapbox://styles/mapbox/streets-v11',
-                    center: feature.center,
-                    zoom: mapZoom
-                });
-                    // map.scrollZoom.disable();
-                    // Grab location of nearby breweries and add marker
-                    // Based on longitude and latitude
-                    for (var i = 0; i < location.length; i++) {
-                        new mapboxgl.Marker()
-                        .setLngLat([location[i].longitude, location[i].latitude])
-                        .addTo(map);
-                    };
-                } 
-            });
+            var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+            center: [long, lat], // starting position [long, lat]
+            zoom: mapZoom// starting zoom
+            
+        });
+        for (var i = 0; i < location.length; i++) {
+            new mapboxgl.Marker()
+            .setLngLat([location[i].longitude, location[i].latitude])
+            .addTo(map);
+        };
         }); 
     }
-    localBrews()
+
 
     // Create filter box that hides/reveals options on click
     $("#show-filter").on('click', function(){
@@ -165,3 +170,5 @@ $(document).ready(function() {
         };
     });
 });
+
+
