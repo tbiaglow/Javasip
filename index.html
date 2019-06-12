@@ -50,24 +50,26 @@
 <!-- main container -->
 <div class="container bg-white">
   <div class="jumbotron jumbotron-fluid pt-3 pb-0">
-        <div id='map'></div>
-        <script src='https://unpkg.com/es6-promise@4.2.4/dist/es6-promise.auto.min.js'></script>
-        <script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+    <div id='map'></div>
+    <script src='https://unpkg.com/es6-promise@4.2.4/dist/es6-promise.auto.min.js'></script>
+    <script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
   </div>
 
   <div class="row border-bottom border-primary" id="filter-select">
     <div class="col-12 pb-3">
-      <a id="show-filter" class="text-primary">Hide Filter</a>
+      <a id="filter-show" class="text-primary">Show Map Filter</a>
     </div>
   </div>
 
   <div id="filter" class="row">
-    <div class="col-12 pb-3 pt-3">
-        <div id="row" class="filter-option">
-          <div class="col-6 float-left">
+    <div class="col-12 py-2">
+        <div class="row filter-option">
+          
+          <div class="col-6">
             Search radius (miles)
           </div>
-          <div class="col-6 float-right">
+
+          <div class="col-6">
             <select id="distance" class="w-50"> 
               <option value="5">5</option>
               <option value="10" selected>10</option>
@@ -76,9 +78,41 @@
               <option value="75">75</option> 
               <option value="100">100</option>    
             </select>
-          </div>            
+          </div>    
         </div>
-        <button id="beer_search" type="button" class="btn btn-primary">Submit</button>
+
+        <div class="row filter-option">
+          <div class="col-6 pb-1">
+              Address
+          </div>
+          <div class="col-6 pb-1">
+            <input id="address-l1" placeholder="20 W 34th St" class="w-50">
+          </div> 
+          <div class="col-6 pb-1">
+              City
+          </div>
+          <div class="col-6 pb-1">
+            <input id="address-city" placeholder="New York" class="w-50">
+          </div>
+          <div class="col-6 pb-1">
+              State
+          </div>
+          <div class="col-6 pb-1">
+            <input id="address-state" placeholder="NY" class="w-50">
+          </div> 
+          <div class="col-6 pb-1">
+              Zip
+          </div>
+          <div class="col-6 pb-1">
+            <input id="address-zip" placeholder="10001" class="w-50">
+          </div>             
+        </div>
+
+        <div class="row pl-3 pb-2">
+          <button id="beer_search" type="button" class="btn btn-primary">Submit</button>
+        </div>
+
+        <div class="row error pl-3 pt-2"></div>
     </div>
   </div>
 

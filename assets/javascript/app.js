@@ -33,33 +33,56 @@ $(document).ready(function() {
         navigator.geolocation.getCurrentPosition(success, error, options);
     };
     ipLookUp()
-
+    
     // Map zoom adj based on filter
     // Default zoom on load = 10
     $("#beer_search").click(function(){
-        // If the user changes the search distance print new list of breweries nearby
-        if ($('#distance').val() !== null) {
-            distance = $('#distance').val()
-            var v = $('#distance').val()
+        $('.error').css('display','none')
+        // Reset map based on user input
+        var search = $('#address-l1').val() + ' ' + $('#address-city').val() + ' ' + $('#address-state').val() + ' ' + $('#address-zip').val()
 
-            if (v === '5' || v === '10') { 
-                mapZoom = 10
-            } else if (v === '25') { 
-                mapZoom = 8
-            } else if (v === '50' || v === '75') { 
-                mapZoom = 7
-            } else { 
-                mapZoom = 6
+        $.ajax({ 
+            url: 'https://api.mapbox.com/v4/geocode/mapbox.places/' + search + '.json?access_token=pk.eyJ1IjoicnlhbmNicm93biIsImEiOiJjandvZTJ2eGcwZGw3NGFueWVpdGZoeXMyIn0.bY5FsEL2jeX1XzOIAPT8NQ',
+            method: 'GET'
+        }).then(function(response){ 
+            var address1 = $('#address-l1').val()
+            var city = $('#address-city').val()
+            var state = $('#address-state').val()
+            var zip = $('#address-zip').val()
+
+
+            if (address1 !== '' && (city === '' && state === '' && zip === '')) {
+                $('.error').css('display','block')
+                $('.error').html('Please add city, state or zip')
+                 
+            } else if ((address1 === '' && city === '' && state === '' && zip === '') || (address1 === '' && (city !== '' || state !== '' || zip !== '') || (address1 !== '' || city !== '' || state !== '' || zip !== ''))) {
+                long = response.features[0].geometry.coordinates[0]
+                lat = response.features[0].geometry.coordinates[1]
+
+                if ($('#distance').val() !== null) {
+                    distance = $('#distance').val()
+                    var v = $('#distance').val()
+    
+                    if (v === '5' || v === '10') { 
+                        mapZoom = 10
+                    } else if (v === '25') { 
+                        mapZoom = 8
+                    } else if (v === '50' || v === '75') { 
+                        mapZoom = 7
+                    } else { 
+                        mapZoom = 6
+                    }
+                }
+                localBrews()
             }
-            localBrews()
-        }
+        })
     });
 
     // On click grab the beer ids associated with brewer
     // Store the id so we can pull additional information from beer object.
     $(document).on('click','.b', function(){ 
         brewer = $(this).attr('data-brewery')
-        $('#display').html('')
+        $('#display').empty()
         $('.jumbotron').remove()
         $('#filter').remove()
         $('#filter-select').remove()
@@ -154,7 +177,7 @@ $(document).ready(function() {
     // To be run on page load and whenever someone changes the search radius
     // Load nearby breweries and map them
     function localBrews() {
-        $('#display').html('')
+        $('#display').empty()
         $('#display').append('<h2>Nearby Breweries</h2>') 
 
         // Map 
@@ -167,15 +190,22 @@ $(document).ready(function() {
             },
             method: 'GET'
         }).then(function(response) {
-            console.log(response)
             location = [];
             for (var i = 0; i < response.data.length; i++) { 
                 location.push({'id':response.data[i].brewer.id,'brewer':response.data[i].brewer.name,'latitude':response.data[i].location.latitude,'longitude':response.data[i].location.longitude})
                 var div = $('<div>').attr({'data-id':response.data[i].brewer.id,'data-brewery':response.data[i].brewer.name}).addClass('b')
                 var address = $('<div>').addClass('brewer-address')
+                var telephone = response.data[i].location.telephone.toString(); 
+
+                // If phone is available, format and print
+                if (response.data[i].location.telephone === 0) {
+                    telephone = ''
+                } else { 
+                    telephone = '<br> Phone: ' + telephone.substr(0,3) + '-' + telephone.substr(3,3) + '-' + telephone.substr(6,9)
+                }
+
                 div.html(response.data[i].brewer.name)
-                address.html('<div class="row"><div class="col">' + response.data[i].location.address.address2 + '<br>' + response.data[i].location.address.city + ', ' + response.data[i].location.address.state_short + ' ' + response.data[i].location.address.zip5 + '</div></div>')
-                
+                address.html('<div class="row"><div class="col">' + response.data[i].location.address.address2 + '<br>' + response.data[i].location.address.city + ', ' + response.data[i].location.address.state_short + ' ' + response.data[i].location.address.zip5 + telephone + '</div></div>')
                 $('#display').append(div) 
                 $(div).append(address) 
             }
@@ -198,14 +228,13 @@ $(document).ready(function() {
     }
 
     // Create filter box that hides/reveals options on click
-    $("#show-filter").on('click', function(){
-        // console.log($('#filter').css('display'));
-        if ($('#filter').css('display') !== 'none'){
-            $('#filter').css('display','none')
-            $('#show-filter').html('Show Filter')
-        } else {
+    $("#filter-show").on('click', function(){
+        if ($('#filter').css('display') === 'none') {
             $('#filter').css('display','block')
-            $('#show-filter').html('Hide Filter')
+            $('#filter-show').html('Hide Map Filter')
+        } else {
+            $('#filter').css('display','none')
+            $('#filter-show').html('Show Map Filter')
         };
     });
 });
