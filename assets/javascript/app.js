@@ -50,8 +50,6 @@ $(document).ready(function() {
             var state = $('#address-state').val()
             var zip = $('#address-zip').val()
 
-            console.log(distance.toString())
-            console.log($('#distance').val())
             if (address1 === '' && city === '' && state === '' && zip === '' && distance.toString() === $('#distance').val()) { 
                 // Return error that relevant information is already there 
                 $('.error').css('display','block')
