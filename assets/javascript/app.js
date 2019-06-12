@@ -27,6 +27,14 @@ $(document).ready(function() {
         function error(err) {
             lat = 40.8;
             long = -74;
+
+            // If user denies geolocation make address filter available on load
+            // Otherwise keep the filter hidden
+            if (err.message === 'User denied Geolocation') {
+                $('#filter').css('display','block')
+                $('#filter-show').html('Hide Map Filter')
+            }
+        
             localBrews()
         }
           
