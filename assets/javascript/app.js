@@ -19,7 +19,7 @@ $(document).ready(function() {
         // If geolocation is accepted set map + nearby brewery search to the user's location
         function success(pos) {
             lat = pos.coords.latitude;
-            long = pos.coords. longitude;
+            long = pos.coords.longitude;
             localBrews()
         }
         
