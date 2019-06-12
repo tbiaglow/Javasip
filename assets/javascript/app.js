@@ -108,7 +108,7 @@ $(document).ready(function() {
                     $('#beer-left').append(div)
                 });
             };
-            $('#display').append('<div id="left-triangle"></div><div class="row bg-warning brewer-name"><h1>' + brewer + '</h1></div></div><hr>')
+            $('#display').append('<div id="blank"></div><div class="row bg-warning brewer-name"><h1>' + brewer + '</h1></div></div><hr>')
             $('#display').append('<div class="row"><div id="styles"><h2>Styles</h2></div></div>')
             $('#display').append('<div class="row" style="padding-left: 10px;"><div class="col-8"><h2>Beers (' + beer.length + ')</h2></div><div class="col-4">Social</div></div>')
             $('#styles').css('display','block')
@@ -167,6 +167,7 @@ $(document).ready(function() {
             },
             method: 'GET'
         }).then(function(response) {
+            console.log(response)
             location = [];
             for (var i = 0; i < response.data.length; i++) { 
                 location.push({'id':response.data[i].brewer.id,'brewer':response.data[i].brewer.name,'latitude':response.data[i].location.latitude,'longitude':response.data[i].location.longitude})

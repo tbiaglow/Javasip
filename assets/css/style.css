@@ -19,12 +19,12 @@ body {
     margin-bottom: 0
 }
 
-#left-triangle {
-    float:left;
+#blank {
+    float:right;
     width: 0;
     height: 0;
-    border-bottom: 58px solid rgb(255,193,7);
-    border-left: 38px solid transparent;
+    border-top: 58px solid #fff;
+    border-right: 58px solid transparent;
 }
 
 #filter {
