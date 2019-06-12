@@ -34,7 +34,6 @@ $(document).ready(function() {
                 $('#filter').css('display','block')
                 $('#filter-show').html('Hide Map Filter')
             }
-        
             localBrews()
         }
           
@@ -78,7 +77,7 @@ $(document).ready(function() {
                     var v = $('#distance').val()
     
                     if (v === '5' || v === '10') { 
-                        mapZoom = 10
+                        mapZoom = 11
                     } else if (v === '25') { 
                         mapZoom = 8
                     } else if (v === '50' || v === '75') { 
@@ -191,6 +190,7 @@ $(document).ready(function() {
     // To be run on page load and whenever someone changes the search radius
     // Load nearby breweries and map them
     function localBrews() {
+        console.log(mapZoom)
         $('#display').empty()
         $('#display').append('<h2>Nearby Breweries</h2>') 
 
@@ -209,6 +209,7 @@ $(document).ready(function() {
                 location.push({'id':response.data[i].brewer.id,'brewer':response.data[i].brewer.name,'latitude':response.data[i].location.latitude,'longitude':response.data[i].location.longitude})
                 var div = $('<div>').attr({'data-id':response.data[i].brewer.id,'data-brewery':response.data[i].brewer.name}).addClass('b')
                 var address = $('<div>').addClass('brewer-address')
+                var distance = $('<div>').addClass('col-6')
                 var telephone = response.data[i].location.telephone.toString(); 
 
                 // If phone is available, format and print
@@ -219,20 +220,21 @@ $(document).ready(function() {
                 }
 
                 div.html(response.data[i].brewer.name)
-                address.html('<div class="row"><div class="col">' + response.data[i].location.address.address2 + '<br>' + response.data[i].location.address.city + ', ' + response.data[i].location.address.state_short + ' ' + response.data[i].location.address.zip5 + telephone + '</div></div>')
+                address.html('<div class="row"><div class="col-6">' + response.data[i].location.address.address2 + '<br>' + response.data[i].location.address.city + ', ' + response.data[i].location.address.state_short + ' ' + response.data[i].location.address.zip5 + telephone + '</div><div class="col-6 text-right pr-4">' + response.data[i].distance.distance + '<br>' + response.data[i].distance.units + '</div>')
                 $('#display').append(div) 
-                $(div).append(address) 
+                $(div).append(address)             
             }
             
             // Include Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicnlhbmNicm93biIsImEiOiJjandvZTJ2eGcwZGw3NGFueWVpdGZoeXMyIn0.bY5FsEL2jeX1XzOIAPT8NQ';
-            var map = new mapboxgl.Map({
-            container: 'map', // container id
-            style: 'mapbox://styles/mapbox/streets-v11', 
-            center: [long, lat], 
-            zoom: mapZoom 
-            
-        });
+                var map = new mapboxgl.Map({
+                container: 'map', // container id
+                style: 'mapbox://styles/mapbox/streets-v11', 
+                center: [long, lat], 
+                zoom: mapZoom 
+            });
+            map.scrollZoom.disable();
+
             for (var i = 0; i < location.length; i++) {
                 new mapboxgl.Marker()
                 .setLngLat([location[i].longitude, location[i].latitude])
