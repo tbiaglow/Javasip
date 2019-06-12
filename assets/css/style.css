@@ -7,7 +7,24 @@ body {
 }
 
 #display, #content {
-    overflow: auto;
+    overflow: auto;    
+}
+
+.brewer-name {
+    border-radius: 0 5px 5px 0;
+    padding: 5px 0 5px 20px; 
+}
+
+.brewer-name > h1 { 
+    margin-bottom: 0
+}
+
+#left-triangle {
+    float:left;
+    width: 0;
+    height: 0;
+    border-bottom: 58px solid rgb(255,193,7);
+    border-left: 38px solid transparent;
 }
 
 #filter {
@@ -43,10 +60,9 @@ body {
 }
 
 .brewer-address {
-    border-bottom: 1px solid #f1f1f1;
     color: #696969;
     font-size: 12pt;
-    padding: 10px;
+    padding: 10px 10px 10px 0;
 }
 
 .beer { 
@@ -67,8 +83,9 @@ body {
     padding-bottom: 10px;
 }
 
-button {
-    outline: none
+button:focus {
+    border: none;
+    outline: none !important;
 }
 
 hr {

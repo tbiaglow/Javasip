@@ -58,8 +58,11 @@ $(document).ready(function() {
     // On click grab the beer ids associated with brewer
     // Store the id so we can pull additional information from beer object.
     $(document).on('click','.b', function(){ 
-        brewer = $(this).text()
+        brewer = $(this).attr('data-brewery')
         $('#display').html('')
+        $('.jumbotron').remove()
+        $('#filter').remove()
+        $('#filter-select').remove()
 
         var brewerUrl = $(this).attr('data-id')
         $.ajax({
@@ -81,8 +84,6 @@ $(document).ready(function() {
                     styleFilter.push(response.data[i].style)
                 }
             };
-            
-
 
             // Call Beer
             for (var b = 0; b < beer.length; b++) {
@@ -107,7 +108,7 @@ $(document).ready(function() {
                     $('#beer-left').append(div)
                 });
             };
-            $('#display').append('<div class="row bg-warning" style="padding-left: 20px"><h1>' + brewer + '</h1></div><hr>')
+            $('#display').append('<div id="left-triangle"></div><div class="row bg-warning brewer-name"><h1>' + brewer + '</h1></div></div><hr>')
             $('#display').append('<div class="row"><div id="styles"><h2>Styles</h2></div></div>')
             $('#display').append('<div class="row" style="padding-left: 10px;"><div class="col-8"><h2>Beers (' + beer.length + ')</h2></div><div class="col-4">Social</div></div>')
             $('#styles').css('display','block')
@@ -123,7 +124,9 @@ $(document).ready(function() {
     }
 
     // Filter beers on button click
-    $(document).on('click', '.filter-button', function(){
+    $(document).on('click', '.filter-button', function(e){
+        e.preventDefault()
+
         if ($(this).hasClass('btn-on')) { 
             // Add clear filter button
             $('#styles').append('<button class="btn-dark clear-filter">Clear Filter</button>')
@@ -167,13 +170,13 @@ $(document).ready(function() {
             location = [];
             for (var i = 0; i < response.data.length; i++) { 
                 location.push({'id':response.data[i].brewer.id,'brewer':response.data[i].brewer.name,'latitude':response.data[i].location.latitude,'longitude':response.data[i].location.longitude})
-                var div = $('<div>').attr('data-id',response.data[i].brewer.id).addClass('b')
+                var div = $('<div>').attr({'data-id':response.data[i].brewer.id,'data-brewery':response.data[i].brewer.name}).addClass('b')
                 var address = $('<div>').addClass('brewer-address')
                 div.html(response.data[i].brewer.name)
                 address.html('<div class="row"><div class="col">' + response.data[i].location.address.address2 + '<br>' + response.data[i].location.address.city + ', ' + response.data[i].location.address.state_short + ' ' + response.data[i].location.address.zip5 + '</div></div>')
                 
                 $('#display').append(div) 
-                $('#display').append(address) 
+                $(div).append(address) 
             }
             
             // Include Mapbox
