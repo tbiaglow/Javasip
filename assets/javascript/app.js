@@ -50,12 +50,20 @@ $(document).ready(function() {
             var state = $('#address-state').val()
             var zip = $('#address-zip').val()
 
-
-            if (address1 !== '' && (city === '' && state === '' && zip === '')) {
+            console.log(distance.toString())
+            console.log($('#distance').val())
+            if (address1 === '' && city === '' && state === '' && zip === '' && distance.toString() === $('#distance').val()) { 
+                // Return error that relevant information is already there 
+                $('.error').css('display','block')
+                $('.error').html('Results within a ' + distance + ' mile radius are displayed. Please change the radius or add an address.')
+            } else if (address1 === '' && city === '' && state === '' && zip === '' && distance.toString() !== $('#distance').val()) { 
+                // Do not change coordinates, but run localBrews() with new distance
+                distance = $('#distance').val()
+                localBrews()
+            } else if (address1 === '' && city === '' && state === '' && zip === '') {
                 $('.error').css('display','block')
                 $('.error').html('Please add city, state or zip')
-                 
-            } else if ((address1 === '' && city === '' && state === '' && zip === '') || (address1 === '' && (city !== '' || state !== '' || zip !== '') || (address1 !== '' || city !== '' || state !== '' || zip !== ''))) {
+            } else if ((address1 === '' && (city !== '' || state !== '' || zip !== '') || (address1 !== '' || city !== '' || state !== '' || zip !== ''))) {
                 long = response.features[0].geometry.coordinates[0]
                 lat = response.features[0].geometry.coordinates[1]
 
