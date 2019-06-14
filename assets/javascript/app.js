@@ -226,7 +226,9 @@ var firebaseConfig = {
                     id: response.data[i].brewer.id,
                     rating: 3
                 }
+                // if (firebaseObject.id != )
                 database.ref().push(firebaseObject);
+                // console.log(database.ref())
                 //Pull info from FireBase, match with location array
                 //database.ref().on("child_added", function(childSnapshot) {
                 //     for (i = 0; i < location.length; i++) {
@@ -234,10 +236,23 @@ var firebaseConfig = {
                 //             location[i].push({'rating': childSnapshot.val().rating})
                 //         }
                 //     }
-                    console.log(firebaseObject.id)
-                    console.log(firebaseObject.rating)
-                    console.log(location[i].id)
+                    // console.log(firebaseObject.id)
+                    // console.log(firebaseObject.rating)
+                    // console.log(location[i].id)
+                    // location[i] = {
+                    //     id: location[i].id,
+                    //     brewer: location[i].brewer,
+                    //     latitude: location[i].latitude,
+                    //     longitued: location[i].longitude,
+                    //     rating: firebaseObject.rating
+                    // }
+                    // console.log(location[i])
                 //}
+                database.ref().on("child_added", function(childSnapshot) {
+                    location[i].rating = childSnapshot.val().rating;
+                    console.log(location[i])
+
+                });
                 // add rating attribute to div that receives user input/
                 var div = $('<div>').attr({'data-id':response.data[i].brewer.id,'data-brewery':response.data[i].brewer.name}).addClass('b')
                 var address = $('<div>').addClass('brewer-address')
