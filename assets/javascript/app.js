@@ -251,15 +251,16 @@ $(document).ready(function() {
                 center: [long, lat], 
                 zoom: mapZoom 
             });
-            map.scrollZoom.disable();
+            
 
             for (var i = 0; i < location.length; i++) {
                 new mapboxgl.Marker()
                 .setLngLat([location[i].longitude, location[i].latitude])
                 .addTo(map);
             };
+            map.scrollZoom.disable();
+            map.addControl(new mapboxgl.NavigationControl());
 
-            // 
             if ($('.b').length > 0 && filter === true) {
                 $('#filter').css('display','none')
                 filter = false
@@ -280,4 +281,22 @@ $(document).ready(function() {
             $('#filter-show').html('Show Map Filter')
         };
     });
+
+    $('#age-check').on('click', function(e){
+        e.preventDefault()
+
+        var day = $("#day").val();
+        var month = $("#month").val();
+        var year = $("#year").val();
+        var age = moment().diff(moment('"' + year + "-" + month + "-" + day), 'y')
+        var diff = 21 - age
+        
+        if (age >= 21) {
+            // clear modal
+            $('#modal').css('display','none')
+        } else { 
+            // return error 
+            $('#age-error').html('Woah buddy, it looks like you\'re too young to drink come back in ' + diff + ' years.').css('display','block')
+        }
+    })
 });
