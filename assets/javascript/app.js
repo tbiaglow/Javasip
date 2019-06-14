@@ -164,4 +164,39 @@ $(document).ready(function() {
             $('#show-filter').html('Hide Filter')
         };
     });
-});
+
+
+
+    //  age verification 
+    
+        $('#age-check').on('click', function(event){
+
+        // scope
+        
+        var day = $("#day").val();
+        var month = $("#month").val();
+        var year = $("#year").val();
+        var birthDate = new Date(month, day, year)
+        var today = new Date();
+        console.log(today)
+        var result = Math.abs(birthDate - today);
+        console.log(result)
+        var minAge = 21;
+
+        console.log(day, month , year)
+        console.log(result)
+
+        if ($('#month').val() < 13 && $('#month').val() > 0){
+               
+        } else {
+               
+        }
+        if ($('#day').val() < 32 && $('day').val() > 0){
+               
+        } else {
+               
+        }
+           event.preventDefault()
+           console.log(result)
+        })
+    });
