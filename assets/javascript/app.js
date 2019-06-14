@@ -289,14 +289,15 @@ $(document).ready(function() {
         var month = $("#month").val();
         var year = $("#year").val();
         var age = moment().diff(moment('"' + year + "-" + month + "-" + day), 'y')
-        var diff = 21 - age
+        var daysDifference = moment().diff(moment('"' + year + "-" + month + "-" + day), 'd')
+        var diff = 7665 - daysDifference
         
         if (age >= 21) {
             // clear modal
             $('#modal').css('display','none')
         } else { 
             // return error 
-            $('#age-error').html('Woah buddy, it looks like you\'re too young to drink alcohol. Come back in ' + diff + ' years.').css('display','block')
+            $('#age-error').html('Woah buddy, it looks like you\'re too young to drink alcohol. Come back in ' + diff + ' days.').css('display','block')
         }
     })
 });
