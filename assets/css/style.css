@@ -52,6 +52,7 @@ body {
 }
 
 .b {
+    cursor: pointer;    
     padding: 10px 0 10px 10px;
 }
 
@@ -69,7 +70,7 @@ body {
     padding: 10px 0 10px 10px
 }
 
-.beer:nth-child(even) {
+.beer-nth:nth-child(even) {
     background: #f7f7f7;
 }
 
