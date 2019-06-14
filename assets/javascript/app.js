@@ -296,7 +296,7 @@ $(document).ready(function() {
             $('#modal').css('display','none')
         } else { 
             // return error 
-            $('#age-error').html('Woah buddy, it looks like you\'re too young to drink come back in ' + diff + ' years.').css('display','block')
+            $('#age-error').html('Woah buddy, it looks like you\'re too young to drink alcohol. Come back in ' + diff + ' years.').css('display','block')
         }
     })
 });
