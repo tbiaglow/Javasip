@@ -147,8 +147,9 @@ $(document).ready(function() {
                     var row = $('<div>').attr('id','beer-row').addClass('row')
                     var left = $('<div>').attr('id','beer-left').addClass('col-8')
                     var right = $('<div>').attr('id','beer-right').addClass('col-4')
+
                     // Print beer name + style to page
-                    div.html('Name: ' + response.name + "<br>" + 'Style: ' + response.style + "<br>" + 'ABV: ' + response.abv + "%<br>" + 'IBU: ' + response.ibu)
+                    div.html('<div class="row"><div class="col-9 float-left">Name: ' + response.name + "<br>" + 'Style: ' + response.style + "<br>" + 'ABV: ' + response.abv + "%<br>" + 'IBU: ' + response.ibu + '</div><div id="save-beer" class="col-3 float-right text-right">Save Beer</div><div>')
                     $('#display').append(row)
                     $('#beer-row').append(left)
                     $('#beer-row').append(right)
@@ -288,8 +289,8 @@ $(document).ready(function() {
         var day = $("#day").val();
         var month = $("#month").val();
         var year = $("#year").val();
-        var age = moment().diff(moment('"' + year + "-" + month + "-" + day), 'y')
-        var daysDifference = moment().diff(moment('"' + year + "-" + month + "-" + day), 'd')
+        var age = moment().diff(moment('"' + year + "-" + month + "-" + day + '"'), 'y')
+        var daysDifference = moment().diff(moment('"' + year + "-" + month + "-" + day +  + '"'), 'd')
         var diff = 7665 - daysDifference
         
         if (age >= 21) {
@@ -299,5 +300,9 @@ $(document).ready(function() {
             // return error 
             $('#age-error').html('Woah buddy, it looks like you\'re too young to drink alcohol. Come back in ' + diff + ' days.').css('display','block')
         }
-    })
+    });
+
+    $('#save-beer').on('click', function(){
+        console.log('test')
+    });
 });
