@@ -7,12 +7,13 @@ $(document).ready(function() {
     var lat;
     var long;
     var brewer;
+    var filter = false
 
     // Function that grabs latitude and longitude of user from ip address
     function ipLookUp () {
         var options = {
             enableHighAccuracy: true,
-            timeout: 5000,
+            timeout: 60000,
             maximumAge: 0
         };
         
@@ -34,7 +35,7 @@ $(document).ready(function() {
                 $('#filter').css('display','block')
                 $('#filter-show').html('Hide Map Filter')
             }
-            localBrews()
+            localBrews()    
         }
           
         navigator.geolocation.getCurrentPosition(success, error, options);
@@ -57,18 +58,27 @@ $(document).ready(function() {
             var state = $('#address-state').val()
             var zip = $('#address-zip').val()
 
-            if (address1 === '' && city === '' && state === '' && zip === '' && distance.toString() === $('#distance').val()) { 
+            // No address distance same, reject update
+            if (address1 === '' && city === '' && state === '' && zip === '' && distance.toString() === $('#distance').val()) {
                 // Return error that relevant information is already there 
                 $('.error').css('display','block')
                 $('.error').html('Results within a ' + distance + ' mile radius are displayed. Please change the radius or add an address.')
+
+            // No address distance different, update distance
             } else if (address1 === '' && city === '' && state === '' && zip === '' && distance.toString() !== $('#distance').val()) { 
                 // Do not change coordinates, but run localBrews() with new distance
                 distance = $('#distance').val()
                 localBrews()
-            } else if (address1 === '' && city === '' && state === '' && zip === '') {
+
+            // If address only reject
+            } else if (address1 !== '' && city === '' && state === '' && zip === '') {
                 $('.error').css('display','block')
                 $('.error').html('Please add city, state or zip')
-            } else if ((address1 === '' && (city !== '' || state !== '' || zip !== '') || (address1 !== '' || city !== '' || state !== '' || zip !== ''))) {
+
+            } else {
+                // On filter submit force scroll to top so new map can be seen
+                $('html, body').animate({scrollTop:0},0)
+
                 long = response.features[0].geometry.coordinates[0]
                 lat = response.features[0].geometry.coordinates[1]
 
@@ -86,6 +96,7 @@ $(document).ready(function() {
                         mapZoom = 6
                     }
                 }
+                filter = true
                 localBrews()
             }
         })
@@ -132,7 +143,7 @@ $(document).ready(function() {
                     },
                     method: 'GET'
                 }).then(function(response){
-                    var div = $('<div>').attr({'data-id':response.id,'data-style':response.style}).addClass('beer')
+                    var div = $('<div>').attr({'data-id':response.id,'data-style':response.style}).addClass('beer beer-nth')
                     var row = $('<div>').attr('id','beer-row').addClass('row')
                     var left = $('<div>').attr('id','beer-left').addClass('col-8')
                     var right = $('<div>').attr('id','beer-right').addClass('col-4')
@@ -146,7 +157,7 @@ $(document).ready(function() {
             };
             $('#display').append('<div id="blank"></div><div class="row bg-warning brewer-name"><h1>' + brewer + '</h1></div></div><hr>')
             $('#display').append('<div class="row"><div id="styles"><h2>Styles</h2></div></div>')
-            $('#display').append('<div class="row" style="padding-left: 10px;"><div class="col-8"><h2>Beers (' + beer.length + ')</h2></div><div class="col-4">Social</div></div>')
+            $('#display').append('<div class="row" style="padding-left: 10px;"><div class="col-8 count"><h2>Beers (' + beer.length + ')</h2></div><div class="col-4"> </div></div>')
             $('#styles').css('display','block')
             beerStyles()
         });
@@ -173,7 +184,11 @@ $(document).ready(function() {
             $(this).removeClass('btn-light').addClass('btn-primary btn-clicked')
             
             // Hide beers that have a style mismatch with the selection
-            $('.beer[data-style!="' + $(this).text() + '"]').css({'display':'none','background':''})
+            $('.beer[data-style!="' + $(this).text() + '"]').css({'display':'none'})
+            // Remove nth pseudo class
+            $('.beer').removeClass('beer-nth')
+            // Change beer count on filter
+            $('.count').html('<h2>Beers (' + $('.beer[data-style="' + $(this).text() + '"]').length + ')</h2>')
         } 
     })
     
@@ -185,12 +200,15 @@ $(document).ready(function() {
         $('.clear-filter').remove()
         // Make buttons blue again
         $('.filter-button').removeClass('btn-off btn-light').addClass('btn-primary btn-on')
+        // Re-add pseudo class
+        $('.beer').addClass('beer-nth')
+        // Reset beer count back to brewery total
+        $('.count').html('<h2>Beers (' + beer.length + ')</h2>')
     })
     
     // To be run on page load and whenever someone changes the search radius
     // Load nearby breweries and map them
     function localBrews() {
-        console.log(mapZoom)
         $('#display').empty()
         $('#display').append('<h2>Nearby Breweries</h2>') 
 
@@ -240,6 +258,15 @@ $(document).ready(function() {
                 .setLngLat([location[i].longitude, location[i].latitude])
                 .addTo(map);
             };
+
+            // 
+            if ($('.b').length > 0 && filter === true) {
+                $('#filter').css('display','none')
+                filter = false
+            } else if ($('.b').length === 0 && filter === true) { 
+                $('#display').append('It seems there are no breweries here.')
+                filter = false
+            }
         }); 
     }
 
