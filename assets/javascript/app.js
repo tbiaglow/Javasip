@@ -1,4 +1,18 @@
 $(document).ready(function() {
+    // Initialize Firebase
+var firebaseConfig = {
+    apiKey: "AIzaSyBJ1llofwDgVsXSIwG5YUTqFbxqbj7tPBk",
+    authDomain: "clickcounter2-2a1e7.firebaseapp.com",
+    databaseURL: "https://clickcounter2-2a1e7.firebaseio.com",
+    projectId: "clickcounter2-2a1e7",
+    storageBucket: "clickcounter2-2a1e7.appspot.com",
+    messagingSenderId: "194836924941",
+    appId: "1:194836924941:web:f850ce3c659d67bd"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+    
+    var database = firebase.database();
     var beer = [];
     var location;
     var distance = 10; // nearby brewery distance
@@ -12,7 +26,7 @@ $(document).ready(function() {
     function ipLookUp () {
         var options = {
             enableHighAccuracy: true,
-            timeout: 5000,
+            timeout: 60000,
             maximumAge: 0
         };
         
@@ -207,6 +221,21 @@ $(document).ready(function() {
             location = [];
             for (var i = 0; i < response.data.length; i++) { 
                 location.push({'id':response.data[i].brewer.id,'brewer':response.data[i].brewer.name,'latitude':response.data[i].location.latitude,'longitude':response.data[i].location.longitude})
+                // store brewer id with rating in firebase
+                var firebaseObject = {
+                    id: response.data[i].brewer.id,
+                    rating: 3
+                }
+                database.ref().push(firebaseObject);
+                //Pull info from FireBase, match with location array
+                // database.ref().on("child_added", function(childSnapshot) {
+                //     for (i = 0; i < location.length; i++) {
+                //         if (response.data[i].brewer.id === childSnapshot.val().id) {
+                //             location[i].push({'rating': childSnapshot.val().rating})
+                //         }
+                //     }
+                // }
+                // add rating attribute to div that receives user input/
                 var div = $('<div>').attr({'data-id':response.data[i].brewer.id,'data-brewery':response.data[i].brewer.name}).addClass('b')
                 var address = $('<div>').addClass('brewer-address')
                 var distance = $('<div>').addClass('col-6')
