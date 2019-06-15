@@ -100,7 +100,7 @@ hr {
 
 #modal { 
     background: #000; 
-    /* background-image: url(../images/beer.jpg) */
+    background-image: url(../images/beer.jpg);
     min-height: 100%;
     min-width: 100%;
     opacity: .99;
