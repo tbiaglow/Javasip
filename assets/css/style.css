@@ -107,6 +107,6 @@ hr {
     z-index: 101;
 }
 
-#save-beer { 
+.savebeer { 
     cursor: pointer;
 }
