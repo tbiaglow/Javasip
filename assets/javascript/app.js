@@ -8,6 +8,7 @@ $(document).ready(function() {
     var long;
     var brewer;
     var filter = false
+    var savebeer = [];
 
     // Function that grabs latitude and longitude of user from ip address
     function ipLookUp () {
@@ -41,7 +42,11 @@ $(document).ready(function() {
         navigator.geolocation.getCurrentPosition(success, error, options);
     };
     ipLookUp()
-    
+
+    // Set savebeer to localStore on load because it gets erased whenever we setItem
+    // By storing this onLoad we can create an updated array that includes the original info that was cleared when the page reloaded and the variable was reset
+    var savebeer = JSON.parse(localStorage.getItem('item')) || [];
+
     // Map zoom adj based on filter
     // Default zoom on load = 10
     $("#beer_search").click(function(){
@@ -146,18 +151,21 @@ $(document).ready(function() {
                     var div = $('<div>').attr({'data-id':response.id,'data-style':response.style}).addClass('beer beer-nth')
                     var row = $('<div>').attr('id','beer-row').addClass('row')
                     var left = $('<div>').attr('id','beer-left').addClass('col-8')
-                    var right = $('<div>').attr('id','beer-right').addClass('col-4')
+                    var right = $('<div>').attr('id','beer-right').addClass('col-4 pl-3')
+
                     // Print beer name + style to page
-                    div.html('Name: ' + response.name + "<br>" + 'Style: ' + response.style + "<br>" + 'ABV: ' + response.abv + "%<br>" + 'IBU: ' + response.ibu)
+                    div.html('<div class="row"><div class="col-9 float-left">Name: ' + response.name + "<br>" + 'Style: ' + response.style + "<br>" + 'ABV: ' + response.abv + "%<br>" + 'IBU: ' + response.ibu + '</div><div data-brewer="' + brewer + '" data-name="' + response.name + '" data-style="' + response.style + '" class="savebeer align-self-center col-3 float-right text-right pr-4">Save Beer</div></div>')
                     $('#display').append(row)
                     $('#beer-row').append(left)
                     $('#beer-row').append(right)
                     $('#beer-left').append(div)
+                    $('#beer-right').html(storedBeers())
                 });
             };
+            
             $('#display').append('<div id="blank"></div><div class="row bg-warning brewer-name"><h1>' + brewer + '</h1></div></div><hr>')
             $('#display').append('<div class="row"><div id="styles"><h2>Styles</h2></div></div>')
-            $('#display').append('<div class="row" style="padding-left: 10px;"><div class="col-8 count"><h2>Beers (' + beer.length + ')</h2></div><div class="col-4"> </div></div>')
+            $('#display').append('<div class="row" style="padding-left: 10px;"><div class="col-8 count"><h2>Beers (' + beer.length + ')</h2></div><div class="col-4"><h2>Saved Beers</h2></div></div>')
             $('#styles').css('display','block')
             beerStyles()
         });
@@ -251,15 +259,16 @@ $(document).ready(function() {
                 center: [long, lat], 
                 zoom: mapZoom 
             });
-            map.scrollZoom.disable();
+            
 
             for (var i = 0; i < location.length; i++) {
                 new mapboxgl.Marker()
                 .setLngLat([location[i].longitude, location[i].latitude])
                 .addTo(map);
             };
+            map.scrollZoom.disable();
+            map.addControl(new mapboxgl.NavigationControl());
 
-            // 
             if ($('.b').length > 0 && filter === true) {
                 $('#filter').css('display','none')
                 filter = false
@@ -270,8 +279,39 @@ $(document).ready(function() {
         }); 
     }
 
+    $(document).on('click', '.savebeer', function(){
+        // If beer is already stored, then reject
+        if (savebeer.map(function(beer) { return beer['beer-name']; }).indexOf($(this).attr('data-name')) === -1) {
+            savebeer.push({'brewer': $(this).attr('data-brewer'),'beer-name': $(this).attr('data-name'),'beer-style': $(this).attr('data-style')})
+        }
+
+        localStorage.setItem('item',JSON.stringify(savebeer));
+
+        storedBeers()
+    });
+
+    function storedBeers() { 
+        // Clear list
+        $('#beer-right').empty()
+
+        // Print new list
+        for (var i = 0; i < JSON.parse(localStorage['item']).length; i++) {
+            $('#beer-right').append(JSON.parse(localStorage.getItem('item'))[i]['brewer'] + '<br>' + JSON.parse(localStorage.getItem('item'))[i]['beer-name'] + '<br><br>')
+        }
+
+        if (JSON.parse(localStorage['item']).length > 0) { 
+            $('#beer-right').append('<button class="btn btn-primary" id="clear-beers">Clear</button>')
+        }
+    }
+
+    $(document).on('click', '#clear-beers', function(){ 
+        localStorage.clear()
+        savebeer = []
+        $('#beer-right').empty()
+    })
+
     // Create filter box that hides/reveals options on click
-    $("#filter-show").on('click', function(){
+    $('#filter-show').on('click', function(){
         if ($('#filter').css('display') === 'none') {
             $('#filter').css('display','block')
             $('#filter-show').html('Hide Map Filter')
@@ -279,5 +319,26 @@ $(document).ready(function() {
             $('#filter').css('display','none')
             $('#filter-show').html('Show Map Filter')
         };
+    });
+
+    $('#age-check').on('click', function(e){
+        e.preventDefault()
+
+        var day = $("#day").val();
+        var month = $("#month").val();
+        var year = $("#year").val();
+        var age = moment().diff(moment('"' + year + "-" + month + "-" + day + '"'), 'y')
+        var daysDifference = moment().diff(moment('"' + year + "-" + month + "-" + day + '"'),'y')
+        var diff = 21 - daysDifference
+        
+        if (month > 13 || day > 31 || (year.length < 4 || (year < '1900' || year > moment().format('YYYY')))) {
+            $('#age-error').html('You sure this is your birthday?').css('display','block')
+        } else if (age >= 21) {
+            // clear modal
+            $('#modal').css('display','none')
+        } else { 
+            // return error 
+            $('#age-error').html('Woah buddy, it looks like you\'re too young to drink alcohol. Come back in ' + diff + ' years.').css('display','block')
+        }
     });
 });

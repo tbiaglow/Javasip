@@ -93,7 +93,20 @@ hr {
     padding-bottom: 20px;
 }
 
-.error { 
+.error, #age-error { 
     display: none;
     color: red
+}
+
+#modal { 
+    background: #000; 
+    min-height: 100%;
+    min-width: 100%;
+    opacity: .99;
+    position: fixed;
+    z-index: 101;
+}
+
+.savebeer { 
+    cursor: pointer;
 }
