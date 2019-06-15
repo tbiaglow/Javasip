@@ -15,6 +15,35 @@
 </head>
 <body>
 
+    <!-- age verification -->
+
+    <div class="container row">
+      <div class="col">
+          <div class="age-checker-content">
+            <h1>We need to check your ID</h1>
+              <p>You must be of legal drinking age to enter this site</p>
+          </div>
+
+            <form class="age-checker-form" method="GET">
+              <div class="row">
+                  <div class="date-field col-xs-4">
+                      <input id="month" type="number" inputmode="numeric" pattern="[0-9]*" name="month" placeholder="MM"   min="1" max="12" maxlength="2">
+                  </div>
+                  <div class="date-field col-xs-4">
+                      <input id="day" type="number" inputmode="numeric" pattern="[0-9]*" name="day" placeholder="DD" min="1" max="31" maxlength="2">
+                  </div>
+                  <div class="date-field col-xs-4">
+                      <input id="year" type="number" inputmode="numeric" name="year" placeholder="YYYY"  min="1900" max="2100" maxLength="4" pattern="[0-9]*">
+                  </div>
+              </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button id="age-check">ENTER</button>
+                </div>
+            </div>
+          </form>
+      </div>
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="#">JavaSip</a>
@@ -45,36 +74,7 @@
         </ul>
       </div>
     </div>
-  </nav>
-
-  <!-- age verification -->
-
-  <div class="container row">
-      <div class="col">
-          <div class="age-checker-content">
-            <h1>We need to check your ID</h1>
-              <p>You must be of legal drinking age to enter this site</p>
-          </div>
-
-            <form class="age-checker-form" method="GET">
-              <div class="row">
-                  <div class="date-field col-xs-4">
-                      <input id="month" type="number" inputmode="numeric" pattern="[0-9]*" name="month" placeholder="MM"   min="1" max="12" maxlength="2">
-                  </div>
-                  <div class="date-field col-xs-4">
-                      <input id="day" type="number" inputmode="numeric" pattern="[0-9]*" name="day" placeholder="DD" min="1" max="31" maxlength="2">
-                  </div>
-                  <div class="date-field col-xs-4">
-                      <input id="year" type="number" inputmode="numeric" name="year" placeholder="YYYY"  min="1900" max="2100" maxLength="4" pattern="[0-9]*">
-                  </div>
-              </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <button id="age-check">ENTER</button>
-                </div>
-            </div>
-          </form>
-      </div> 
+  </nav> 
 
       <div class="modal"> 
 

@@ -198,5 +198,12 @@ $(document).ready(function() {
         }
            event.preventDefault()
            console.log(result)
+
+           if (moment().diff(moment(year,month,day), 'y') >= 21) {
+            $('#age-error').empty()
+            $('#modal').css('display','none')
+         } else { 
+           $('#age-error').html("I'm sorry but you are not old enough").css('display','block')
+         }
         })
     });
