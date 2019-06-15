@@ -331,9 +331,7 @@ $(document).ready(function() {
         var daysDifference = moment().diff(moment('"' + year + "-" + month + "-" + day + '"'),'y')
         var diff = 21 - daysDifference
         
-        if (month > 13 || day > 31 || (year.length < 4 || (year < '1900' || year > moment().format('YYYY')))) {
-            $('#age-error').html('You sure this is your birthday?').css('display','block')
-        } else if (age >= 21) {
+        if (age >= 21) {
             // clear modal
             $('#modal').css('display','none')
         } else { 
