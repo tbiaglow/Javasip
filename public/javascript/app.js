@@ -1,18 +1,20 @@
 $(document).ready(function() {
     // Initialize Firebase
-var firebaseConfig = {
-    apiKey: "AIzaSyBJ1llofwDgVsXSIwG5YUTqFbxqbj7tPBk",
-    authDomain: "clickcounter2-2a1e7.firebaseapp.com",
-    databaseURL: "https://clickcounter2-2a1e7.firebaseio.com",
-    projectId: "clickcounter2-2a1e7",
-    storageBucket: "clickcounter2-2a1e7.appspot.com",
-    messagingSenderId: "194836924941",
-    appId: "1:194836924941:web:f850ce3c659d67bd"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+// var firebaseConfig = {
+//     apiKey: "AIzaSyBJ1llofwDgVsXSIwG5YUTqFbxqbj7tPBk",
+//     authDomain: "clickcounter2-2a1e7.firebaseapp.com",
+//     databaseURL: "https://clickcounter2-2a1e7.firebaseio.com",
+//     projectId: "clickcounter2-2a1e7",
+//     storageBucket: "clickcounter2-2a1e7.appspot.com",
+//     messagingSenderId: "194836924941",
+//     appId: "1:194836924941:web:f850ce3c659d67bd"
+//   };
+//   // Initialize Firebase
+//   firebase.initializeApp(firebaseConfig);
     
-    var database = firebase.database();
+//     var database = firebase.database();
+
+
     var beer = [];
     var location;
     var distance = 10; // nearby brewery distance
@@ -221,38 +223,8 @@ var firebaseConfig = {
             location = [];
             for (var i = 0; i < response.data.length; i++) { 
                 location.push({'id':response.data[i].brewer.id,'brewer':response.data[i].brewer.name,'latitude':response.data[i].location.latitude,'longitude':response.data[i].location.longitude})
-                // store brewer id with rating in firebase
-                var firebaseObject = {
-                    id: response.data[i].brewer.id,
-                    rating: 3
-                }
-                // if (firebaseObject.id != )
-                database.ref().push(firebaseObject);
-                // console.log(database.ref())
-                //Pull info from FireBase, match with location array
-                //database.ref().on("child_added", function(childSnapshot) {
-                //     for (i = 0; i < location.length; i++) {
-                //         if (response.data[i].brewer.id === childSnapshot.val().id) {
-                //             location[i].push({'rating': childSnapshot.val().rating})
-                //         }
-                //     }
-                    // console.log(firebaseObject.id)
-                    // console.log(firebaseObject.rating)
-                    // console.log(location[i].id)
-                    // location[i] = {
-                    //     id: location[i].id,
-                    //     brewer: location[i].brewer,
-                    //     latitude: location[i].latitude,
-                    //     longitued: location[i].longitude,
-                    //     rating: firebaseObject.rating
-                    // }
-                    // console.log(location[i])
-                //}
-                database.ref().on("child_added", function(childSnapshot) {
-                    location[i].rating = childSnapshot.val().rating;
-                    console.log(location[i])
 
-                });
+                
                 // add rating attribute to div that receives user input/
                 var div = $('<div>').attr({'data-id':response.data[i].brewer.id,'data-brewery':response.data[i].brewer.name}).addClass('b')
                 var address = $('<div>').addClass('brewer-address')
@@ -269,7 +241,14 @@ var firebaseConfig = {
                 div.html(response.data[i].brewer.name)
                 address.html('<div class="row"><div class="col-6">' + response.data[i].location.address.address2 + '<br>' + response.data[i].location.address.city + ', ' + response.data[i].location.address.state_short + ' ' + response.data[i].location.address.zip5 + telephone + '</div><div class="col-6 text-right pr-4">' + response.data[i].distance.distance + '<br>' + response.data[i].distance.units + '</div>')
                 $('#display').append(div) 
-                $(div).append(address)             
+                $(div).append(address)
+                var favDiv = $('<div>').html('<button class="btn-primary" id="favorite">Favorite</button>')
+                $('#display').append(favDiv)
+                // $(div).append('<button class="btn-primary" id="favorite">Favorite</button>')
+                $("#favorite").on("click", function (e) {
+                    e.preventDefault()
+                    localStorage.setItem("Brewery Name:", response.data[i].brewer.name)
+                })             
             }
             
             // Include Mapbox
