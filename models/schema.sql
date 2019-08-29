@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS beerRatings;
 CREATE DATABASE beerRatings;
 USE beerRatings;
 
-CREATE TABLE breweries (
+CREATE TABLE brewery (
     id INTEGER(2) AUTO_INCREMENT NOT NULL,
     name VARCHAR(15) NOT NULL,
     score INTEGER(1) NOT NULL,
